@@ -3,3 +3,9 @@ config
 Flask
 Flask-Cors
 zipfile37
+rdflib
+flask
+flask_swagger
+flask_swagger_ui
+flask_restful
+argparse
