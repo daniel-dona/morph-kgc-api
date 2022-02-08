@@ -125,7 +125,7 @@ class Server(Resource):
 					zip_data.extractall(path=data_dir)
 					
 				
-				purge_mapping(mapping_file, run_dir)
+				purge_mapping(mapping_file, data_dir)
 				
 				run_morph_kgc(mapping_file, output_file)
 				
