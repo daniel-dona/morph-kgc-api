@@ -51,7 +51,7 @@ def purge_mapping(mapping_path, data_path):
 			
 			if t[1] ==  rdflib.term.URIRef('http://semweb.mmlab.be/ns/rml#source'):
 				
-				new = (t[0], t[1], rdflib.term.Literal(data_path+str(t[2]).replace("/data/", ""))
+				new = (t[0], t[1], rdflib.term.Literal(data_path+str(t[2]).replace("/data/", "")))
 				
 				g.remove(t)
 				g.add(new)
