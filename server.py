@@ -51,7 +51,7 @@ def purge_mapping(mapping_path, data_path):
 			
 			if t[1] ==  rdflib.term.URIRef('http://semweb.mmlab.be/ns/rml#source'):
 				
-				new = (t[0], t[1], rdflib.term.Literal(data_path+str(t[2])))
+				new = (t[0], t[1], rdflib.term.Literal(data_path+str(t[2]).replace("/data/", ""))
 				
 				g.remove(t)
 				g.add(new)
@@ -144,36 +144,6 @@ class Server(Resource):
 				print(data)
 				
 				abort(400)
-
-'''
-def upload_file():
-	try:
-		if request.method == 'POST':
-			mapping = request.form['mapping']
-			
-			print(mapping)
-			
-			f = open(pathRmlMapping, 'w')
-			f.write(mapping)
-			f.close()
-			csv = request.files['csv']
-			csv.save(pathZipFile)
-			with zipfile.ZipFile(pathZipFile, 'r') as zip_ref:
-			   zip_ref.extractall(pathFiles)
-			   
-			   
-			run_morph_kgc()
-			compress_result()
-			return send_file(outputPathZippedFile, mimetype='application/x-zip')
-
-	except Exception as e:
-		print(traceback.format_exc())
-		return "Error..."
-
-if __name__ == '__main__':
-   app.run(host="0.0.0.0", port="5000",debug= True)
-'''
-
 
 api.add_resource(Server, API_URL)
 
