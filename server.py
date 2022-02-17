@@ -35,12 +35,6 @@ swaggerui_blueprint = get_swaggerui_blueprint(
 app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 
 
-pathFiles = "/data/"
-pathZipFile = pathFiles + "csv.zip"
-pathRmlMapping = pathFiles + "mapping.ttl"
-outputPathFile = "/output/result.ttl"
-outputPathZippedFile = "/output/result.zip"
-
 def purge_mapping(mapping_path, data_path):
 	
 	try:
@@ -66,7 +60,6 @@ def purge_mapping(mapping_path, data_path):
 		
 		print("Unable to parse mapping!")
 
-
 def run_morph_kgc(mapping_path, output_path):
 	
 	#data_path = 
@@ -83,19 +76,17 @@ def run_morph_kgc(mapping_path, output_path):
 	graph = morph_kgc.materialize(config)
 	graph.serialize(destination=output_path, format='nt',  encoding="utf-8")
 
-def compress_result():
-	zipObj = zipfile.ZipFile(outputPathZippedFile, 'w')
-	zipObj.write(outputPathFile, "result.ttl")
-	zipObj.close()
-
 
 class Server(Resource):
 	
 	def get(self):
 		 
 		swag = swagger(app)
-		swag['info']['version'] = "1.5"
+		swag['info']['version'] = "1.5.0"
 		swag['info']['title'] = "Morph-KGC API"
+		
+		
+		
 		return jsonify(swag)
 
 	def post(self):
@@ -108,7 +99,7 @@ class Server(Resource):
 			#data_file = tempfile.NamedTemporaryFile(prefix="morph-kgc_data", suffix=".zip", dir=run_dir).name
 			
 			mapping_file = run_dir+"/mapping.ttl"
-			data_file = run_dir+"/data.zip"
+			data_file_zip = run_dir+"/data.zip"
 			output_file = run_dir+"/result.nt"
 			output_file_compressed = run_dir+"/result.zip" #io.BytesIO()
 			
@@ -117,14 +108,21 @@ class Server(Resource):
 			if data['mapping'] != None and data['data'] != None:
 				
 				data['mapping'].save(mapping_file)
-				data['data'].save(data_file)
 				
-				print(data['data'])
+				print(data['data'].mimetype)
 				
-				with zipfile.ZipFile(data_file, 'r') as zip_data:
+				if data['data'].mimetype == 'application/zip':
 					
-					print(zip_data.infolist())
-					zip_data.extractall(path=data_dir)
+					data['data'].save(data_file)
+				
+					with zipfile.ZipFile(data_file, 'r') as zip_data:
+						
+						print(zip_data.infolist())
+						zip_data.extractall(path=data_dir)
+						
+				else:
+					
+					data['mapping'].save(data_dir+data['mapping'].filename)
 					
 				
 				purge_mapping(mapping_file, data_dir)
