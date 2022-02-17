@@ -10,6 +10,7 @@ import zipfile
 import traceback
 import rdflib
 import io
+import os
 
 parser = reqparse.RequestParser()
 parser.add_argument('mapping',type=datastructures.FileStorage, location='files')
@@ -106,6 +107,8 @@ class Server(Resource):
 			data = parser.parse_args()
 			
 			if data['mapping'] != None and data['data'] != None:
+				
+				os.mkdir(data_dir)
 				
 				data['mapping'].save(mapping_file)
 				
