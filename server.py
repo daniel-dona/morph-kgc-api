@@ -123,14 +123,30 @@ class Server(Resource):
 						print(zip_data.infolist())
 						zip_data.extractall(path=data_dir)
 						
-				elif data['data'].mimetype == "text/csv" or data['data'].mimetype == "text/json" or data['data'].mimetype == "text/xml":
+				elif data['data'].mimetype == "text/csv" or data['data'].mimetype == "application/json" or data['data'].mimetype == "text/xml":
 					
 					data['data'].save(data_dir+data['data'].filename)
 					
+				else:
+					
+					return ("Not supported data file, check contents or extension!", 400)
+					
 				
-				purge_mapping(mapping_file, data_dir)
+				try:
 				
-				run_morph_kgc(mapping_file, output_file)
+					purge_mapping(mapping_file, data_dir)
+					
+				except: 
+					
+					return ("There is an error with your mapping!", 400)
+				
+				try:
+				
+					run_morph_kgc(mapping_file, output_file)
+					
+				except:
+					
+					return ("Materialization failed!", 400)
 				
 				zipObj = zipfile.ZipFile(output_file_compressed, 'w')
 				zipObj.write(output_file, "result.nt")
