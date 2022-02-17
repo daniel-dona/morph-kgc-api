@@ -119,6 +119,8 @@ class Server(Resource):
 				data['mapping'].save(mapping_file)
 				data['data'].save(data_file)
 				
+				print(data['data'])
+				
 				with zipfile.ZipFile(data_file, 'r') as zip_data:
 					
 					print(zip_data.infolist())
