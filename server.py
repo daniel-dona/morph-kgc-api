@@ -109,20 +109,20 @@ class Server(Resource):
 				
 				data['mapping'].save(mapping_file)
 				
-				print(data['data'].mimetype)
+				print(data['data'])
 				
 				if data['data'].mimetype == 'application/zip':
 					
-					data['data'].save(data_file)
+					data['data'].save(data_file_zip)
 				
-					with zipfile.ZipFile(data_file, 'r') as zip_data:
+					with zipfile.ZipFile(data_file_zip, 'r') as zip_data:
 						
 						print(zip_data.infolist())
 						zip_data.extractall(path=data_dir)
 						
-				else:
+				elif data['data'].mimetype == "text/csv" or data['data'].mimetype == "text/json" or data['data'].mimetype == "text/xml":
 					
-					data['mapping'].save(data_dir+data['mapping'].filename)
+					data['data'].save(data_dir+data['data'].filename)
 					
 				
 				purge_mapping(mapping_file, data_dir)
